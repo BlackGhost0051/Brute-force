@@ -16,6 +16,15 @@ struct ThreadData {
     char found_password[PASSWORD_LENGTH + 1];
 };
 
+void generate_password(char *password, int num){
+    int charset_size = strlen(CHARSET);
+    for (int i = 0; i < PASSWORD_LENGTH; i++) {
+        password[PASSWORD_LENGTH - 1 - i] = CHARSET[num % charset_size];
+        num /= charset_size;
+    }
+    password[PASSWORD_LENGTH] = '\0';
+}
+
 int unzip(const *file_name, const char *password){
     int err = 0;
     struct zip *za = zip_open(file_name, 0, &err);
