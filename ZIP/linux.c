@@ -3,9 +3,18 @@
 #include <zip.h>
 #include <pthread.h>
 
+#define FILE_NAME "secret.zip"
 #define NUM_THREADS 8
 #define PASSWORD_LENGTH 4
 #define CHARSET "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+struct ThreadData {
+    const char *file_name;
+    int start_index;
+    int end_index;
+    int found;
+    char found_password[PASSWORD_LENGTH + 1];
+};
 
 int unzip(const *file_name, const char *password){
     int err = 0;
@@ -22,6 +31,11 @@ int unzip(const *file_name, const char *password){
     }
 }
 
+void *threadFunction(void *arg){
+
+}
+
 int main(){
+    pthread_t threads[NUM_THREADS];
     return 0;
 }
