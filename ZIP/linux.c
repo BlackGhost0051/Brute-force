@@ -25,19 +25,36 @@ void generate_password(char *password, int num){
     password[PASSWORD_LENGTH] = '\0';
 }
 
-int unzip(const *file_name, const char *password){
-    int err = 0;
-    struct zip *za = zip_open(file_name, 0, &err);
-
-    if(za == NULL){
-        printf("Could not open the archive\n");
+int unzip(const char *file_name, const char *password) {
+    int err;
+    
+    zip_t *zfile = zip_open(file_name, ZIP_RDONLY, &err);
+    if (!zfile) {
+        printf("Error: Unable to open file\n");
         return 0;
     }
 
-    if (zip_set_default_password(za, password) != 0) {
-        zip_close(za);
+    struct zip_stat st;
+    zip_stat_init(&st);
+    zip_stat_index(zfile, 0, 0, &st);
+
+    zip_file_t *zfile_file = zip_fopen_encrypted(zfile, st.name, 0, password);
+    if (!zfile_file) {
+        zip_close(zfile);
         return 0;
     }
+
+    char buffer[4096];
+    int bytes_read = zip_fread(zfile_file, buffer, sizeof(buffer));
+    if (bytes_read < 0) {
+        zip_fclose(zfile_file);
+        zip_close(zfile);
+        return 0;
+    }
+
+    zip_fclose(zfile_file);
+    zip_close(zfile);
+    return 1;
 }
 
 void *threadFunction(void *arg){
