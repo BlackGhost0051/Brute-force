@@ -71,8 +71,21 @@ int main(){
         range *= charset_size;
     }
 
-    for(int t = 0; t < NUM_THREADS; t++){
-        pthread_create(&threads[t], NULL, threadFunction, (void *)&threadData[t]);
+    char password[PASSWORD_LENGTH + 1];
+    int found = 0;
+
+    for (int num = 0; num < range; num++) {
+        generate_password(password, num);
+        printf("Trying password: %s\n", password);
+        if (unzip(FILE_NAME, password)) {
+            printf("The password was correct: %s\n", password);
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Password not found.\n");
     }
 
     return 0;
