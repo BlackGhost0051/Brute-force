@@ -63,5 +63,12 @@ void *threadFunction(void *arg){
 
 int main(){
     pthread_t threads[NUM_THREADS];
+    struct ThreadData threadData[NUM_THREADS];
+    int charset_size = strlen(CHARSET);
+
+    for(int t = 0; t < NUM_THREADS; t++){
+        pthread_create(&threads[t], NULL, threadFunction, (void *)&threadData[t]);
+    }
+
     return 0;
 }
